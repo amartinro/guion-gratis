@@ -214,17 +214,46 @@
         <p><span class="text-neutral-400">CTA:</span> ${g.cta}</p>
       `;
 
-      // Normaliza por si la IA devuelve strings u objetos en lugar de arrays
-      const planoSrc = (data.plano_a_plano ?? data.plano ?? data.plano_a_aplano ?? g?.plano_a_plano ?? g?.plano ?? g?.plano_a_aplano ?? []);
-      const planoArr = Array.isArray(planoSrc)
-        ? planoSrc
-        : (planoSrc && typeof planoSrc === 'object' ? [planoSrc] : []);
-      // Helper to normalize to array
+      // ---- Normalización robusta de estructuras (soporta texto/array/objeto) ----
+      // Convierte string u array separado en lista de strings
       function toList(val) {
         if (Array.isArray(val)) return val;
-        if (typeof val === 'string') return val.split(/[•\-\n,;]+/).map(s=>s.trim()).filter(Boolean);
+        if (typeof val === 'string') {
+          return val.split(/[•·\n,;]|(?:\s[—–-]\s)/g).map(s=>s.trim()).filter(Boolean);
+        }
         return [];
       }
+
+      // Parsea 'plano a plano' en formato string:
+      // "0-2: ACCIÓN — TEXTO_PANTALLA — Voz: VOZ"
+      function parsePlano(src) {
+        if (Array.isArray(src)) return src;
+        if (src && typeof src === 'object') return [src];
+        if (typeof src === 'string') {
+          const lines = src.split(/\n+/).map(l=>l.trim()).filter(Boolean);
+          return lines.map(l => {
+            // separar "segundos: resto"
+            const m = l.match(/^\s*([^:]+):\s*(.+)$/);
+            const segundos = m ? m[1].trim() : '';
+            const resto = m ? m[2] : l;
+            // Extraer voz si viene al final
+            let voz = '';
+            const vozMatch = resto.match(/Voz:\s*(.+)$/i);
+            if (vozMatch) voz = vozMatch[1].trim();
+            // Separar acción y texto_pantalla por guiones (— – -)
+            const partes = resto.replace(/Voz:\s*.+$/i, '').split(/\s?[—–-]\s?/);
+            const accion = (partes[0] || '').trim();
+            const texto_pantalla = (partes[1] || '').trim();
+            return { segundos, accion, texto_pantalla, voz };
+          });
+        }
+        return [];
+      }
+
+      // Origen posible en raíz o dentro de guion (por si Make devuelve anidado)
+      const planoRaw = (data.plano_a_plano ?? data.plano ?? data.plano_a_aplano ?? g?.plano_a_plano ?? g?.plano ?? g?.plano_a_aplano ?? '');
+      const planoArr = parsePlano(planoRaw);
+
       const variantesArr = toList(data.variantes_gancho ?? g?.variantes_gancho);
       const checklistArr = toList(data.checklist_diy ?? g?.checklist_diy);
 
