@@ -146,7 +146,7 @@
 
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script>
-  const API_URL = "8j797tlxivuyglsskxtdfdeqhokbi1dr@hook.eu1.make.com"; // <- Cambia esto
+  const API_URL = "https://hook.eu1.make.com/8j797tlxivuyglsskxtdfdeqhokbi1dr"; // <- Cambia esto
   const WA_NUM = "34XXXXXXXXX"; // <- Tu WhatsApp
 
   const form = document.getElementById('guion-form');
@@ -171,6 +171,7 @@
 
     const payload = {
       nombre: fd.get('nombre'),
+      email: fd.get('email'),
       instagram: (fd.get('instagram')||'').replace(/^@/, ''),
       telefono: fd.get('telefono') || '',
       ciudad: fd.get('ciudad') || '',
@@ -179,8 +180,8 @@
       diferencial: fd.get('diferencial') || '',
       competidor: fd.get('competidor') || '',
       consent: !!fd.get('consent'),
-      turnstileToken: tsToken,
-      ...UTM
+      turnstileToken: tsToken
+     // ...UTM
     };
 
     try{
@@ -189,8 +190,13 @@
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload)
       });
-      const data = await res.json();
-      if(!res.ok || data.error){ throw new Error(data.error || 'Error'); }
+      //const data = await res.json();
+      const raw = await res.text();
+      let data;
+      try { data = raw ? JSON.parse(raw) : null; }
+      catch { throw new Error('Respuesta no válida del servidor'); }
+      if (!res.ok || !data || data.error) throw new Error(data?.error || 'Error en servidor');
+      
 
       const g = data.guion;
       document.getElementById('guion').innerHTML = `
