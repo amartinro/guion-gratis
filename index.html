@@ -34,9 +34,9 @@
         <span class="font-medium">Alberto Martín</span>
       </a>
     </div>
-    <div class="mt-3">
+    <!-- <div class="mt-3">
       <a href="https://www.instagram.com/amartinro/" target="_blank" rel="noopener" class="text-xs text-indigo-300 hover:text-indigo-200 underline">@amartinro</a>
-    </div>
+    </div> -->
   </header>
 
   <main class="max-w-3xl mx-auto px-4 pb-16">
@@ -96,7 +96,7 @@
 
         <!-- Cloudflare Turnstile (dark) -->
         <div class="mt-2">
-          <div class="cf-turnstile" data-sitekey="0x4AAAAAAB319LvRRrr4YA6R" data-theme="dark"></div>
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAAB319LvRRrr4YA6R" data-theme="dark" data-callback="onTS"></div>
         </div>
 
         <details class="text-xs text-neutral-400 mt-2">
@@ -149,6 +149,9 @@
   const API_URL = "https://hook.eu1.make.com/yjamhggycrrranolpeb5fec5d3ibkxmk"; // <- Cambia esto
   const WA_NUM = "34665651344"; // <- Tu WhatsApp
 
+  // Turnstile callback: guarda el token más reciente por si el input oculto aún no está presente
+  window.onTS = function(token){ window.__tsToken = token; };
+
   const form = document.getElementById('guion-form');
   const msg  = document.getElementById('msg');
   const out  = document.getElementById('resultado');
@@ -180,22 +183,27 @@
       diferencial: fd.get('diferencial') || '',
       competidor: fd.get('competidor') || '',
       consent: !!fd.get('consent'),
-      turnstileToken: tsToken
-     // ...UTM
+      turnstileToken: tsToken || window.__tsToken || '',
+      ...UTM
     };
 
     try{
       const res = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
+        mode: 'cors',
+        cache: 'no-store',
+        headers: { 'Content-Type': 'text/plain', 'Accept': 'application/json' },
         body: JSON.stringify(payload)
       });
       //const data = await res.json();
       const raw = await res.text();
       let data;
       try { data = raw ? JSON.parse(raw) : null; }
-      catch { throw new Error('Respuesta no válida del servidor'); }
-      if (!res.ok || !data || data.error) throw new Error(data?.error || 'Error en servidor');
+      catch { throw new Error('Respuesta no válida del servidor: ' + (raw ? raw.slice(0,180) : '(vacío)')); }
+      if (!res.ok || !data || data.error) {
+        const serverMsg = (data && data.error) ? data.error : (raw ? raw.slice(0,180) : 'Error en servidor');
+        throw new Error(serverMsg);
+      }
       
 
       const g = data.guion;
