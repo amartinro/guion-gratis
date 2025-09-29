@@ -213,14 +213,31 @@
         <p><span class="text-neutral-400">Solución:</span> ${g.solucion}</p>
         <p><span class="text-neutral-400">CTA:</span> ${g.cta}</p>
       `;
-      document.getElementById('plano').innerHTML = (data.plano_a_plano||[]).map(p =>
-        `<p><strong>${p.segundos}:</strong> ${p.accion} · <em class="text-neutral-300">${p.texto_pantalla}</em> · Voz: ${p.voz}</p>`
+
+      // Normaliza por si la IA devuelve strings u objetos en lugar de arrays
+      const planoSrc = data.plano_a_plano || data.plano || data.plano_a_aplano || [];
+      const planoArr = Array.isArray(planoSrc)
+        ? planoSrc
+        : (planoSrc && typeof planoSrc === 'object' ? [planoSrc] : []);
+      const variantesArr = Array.isArray(data.variantes_gancho)
+        ? data.variantes_gancho
+        : (typeof data.variantes_gancho === 'string'
+            ? data.variantes_gancho.split(/[•\-\n,;]+/).map(s=>s.trim()).filter(Boolean)
+            : []);
+      const checklistArr = Array.isArray(data.checklist_diy)
+        ? data.checklist_diy
+        : (typeof data.checklist_diy === 'string'
+            ? data.checklist_diy.split(/[•\-\n,;]+/).map(s=>s.trim()).filter(Boolean)
+            : []);
+
+      document.getElementById('plano').innerHTML = planoArr.map(p =>
+        `<p><strong>${p.segundos || ''}:</strong> ${p.accion || ''} · <em class="text-neutral-300">${p.texto_pantalla || ''}</em> · Voz: ${p.voz || ''}</p>`
       ).join('');
-      document.getElementById('variantes').innerHTML = (data.variantes_gancho||[]).map(v=>`<li>${v}</li>`).join('');
-      document.getElementById('checklist').innerHTML = (data.checklist_diy||[]).map(v=>`<li>${v}</li>`).join('');
+      document.getElementById('variantes').innerHTML = variantesArr.map(v=>`<li>${v}</li>`).join('');
+      document.getElementById('checklist').innerHTML = checklistArr.map(v=>`<li>${v}</li>`).join('');
 
       const fullText = `GANCHO: ${g.gancho}\nPROBLEMA: ${g.problema}\nSOLUCIÓN: ${g.solucion}\nCTA: ${g.cta}\n\nPLANO A PLANO:\n` +
-        (data.plano_a_plano||[]).map(p=>`${p.segundos}: ${p.accion} | ${p.texto_pantalla} | Voz: ${p.voz}`).join('\n');
+        planoArr.map(p=>`${p.segundos || ''}: ${p.accion || ''} | ${p.texto_pantalla || ''} | Voz: ${p.voz || ''}`).join('\n');
 
       document.getElementById('copiar').onclick = async ()=>{
         await navigator.clipboard.writeText(fullText);
