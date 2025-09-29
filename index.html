@@ -139,7 +139,7 @@
       <div class="mt-6 flex flex-wrap gap-3">
         <button id="copiar" class="rounded-xl border border-neutral-700 bg-neutral-800 px-4 py-2 hover:bg-neutral-700">Copiar guion</button>
         <a id="whatsapp" target="_blank" rel="noopener" class="rounded-xl px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold">Grábalo conmigo (WhatsApp)</a>
-        <a href="https://cueprompter.com/" target="_blank" rel="noopener" class="rounded-xl border border-neutral-700 bg-neutral-800 px-4 py-2 hover:bg-neutral-700">Abrir teleprompter</a>
+        <!-- <a href="https://cueprompter.com/" target="_blank" rel="noopener" class="rounded-xl border border-neutral-700 bg-neutral-800 px-4 py-2 hover:bg-neutral-700">Abrir teleprompter</a> -->
       </div>
     </section>
   </main>
@@ -215,20 +215,18 @@
       `;
 
       // Normaliza por si la IA devuelve strings u objetos en lugar de arrays
-      const planoSrc = data.plano_a_plano || data.plano || data.plano_a_aplano || [];
+      const planoSrc = (data.plano_a_plano ?? data.plano ?? data.plano_a_aplano ?? g?.plano_a_plano ?? g?.plano ?? g?.plano_a_aplano ?? []);
       const planoArr = Array.isArray(planoSrc)
         ? planoSrc
         : (planoSrc && typeof planoSrc === 'object' ? [planoSrc] : []);
-      const variantesArr = Array.isArray(data.variantes_gancho)
-        ? data.variantes_gancho
-        : (typeof data.variantes_gancho === 'string'
-            ? data.variantes_gancho.split(/[•\-\n,;]+/).map(s=>s.trim()).filter(Boolean)
-            : []);
-      const checklistArr = Array.isArray(data.checklist_diy)
-        ? data.checklist_diy
-        : (typeof data.checklist_diy === 'string'
-            ? data.checklist_diy.split(/[•\-\n,;]+/).map(s=>s.trim()).filter(Boolean)
-            : []);
+      // Helper to normalize to array
+      function toList(val) {
+        if (Array.isArray(val)) return val;
+        if (typeof val === 'string') return val.split(/[•\-\n,;]+/).map(s=>s.trim()).filter(Boolean);
+        return [];
+      }
+      const variantesArr = toList(data.variantes_gancho ?? g?.variantes_gancho);
+      const checklistArr = toList(data.checklist_diy ?? g?.checklist_diy);
 
       document.getElementById('plano').innerHTML = planoArr.map(p =>
         `<p><strong>${p.segundos || ''}:</strong> ${p.accion || ''} · <em class="text-neutral-300">${p.texto_pantalla || ''}</em> · Voz: ${p.voz || ''}</p>`
