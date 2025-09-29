@@ -45,11 +45,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm text-neutral-300">Nombre*</label>
-            <input name="nombre" required class="mt-1 w-full rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            <input name="nombre" required maxlength="80" class="mt-1 w-full rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
           </div>
           <div>
             <label class="block text-sm text-neutral-300">Teléfono (contacto)</label>
-            <input name="telefono" placeholder="+34 6XX XXX XXX" class="mt-1 w-full rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            <input name="telefono" placeholder="+34 6XX XXX XXX" inputmode="tel" pattern="^\\+?\\d[\\d\\s\\-]{6,15}$" maxlength="18" title="+34 6XX XXX XXX" class="mt-1 w-full rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
           </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -66,7 +66,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm text-neutral-300">Instagram (@sin @)*</label>
-            <input name="instagram" required placeholder="nombredeusuario" class="mt-1 w-full rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            <input name="instagram" required placeholder="nombredeusuario" pattern="^[A-Za-z0-9._]{1,30}$" maxlength="30" title="Solo letras, números, punto o guion bajo" class="mt-1 w-full rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
           </div>
           <div>
             <label class="block text-sm text-neutral-300">Ciudad</label>
@@ -76,24 +76,30 @@
 
         <div>
           <label class="block text-sm text-neutral-300">Sector/negocio (1 frase)*</label>
-          <input name="sector" required placeholder="Pizzería artesana, horno de leña" class="mt-1 w-full rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+          <input name="sector" required maxlength="120" placeholder="Pizzería artesana, horno de leña" class="mt-1 w-full rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
         </div>
 
         <div>
           <label class="block text-sm text-neutral-300">¿Qué buscas obtener? <span class="text-neutral-400">(autoridad, alcance, ventas; e indica 3 frenos habituales: falta de tiempo, pocas ideas, baja retención)</span>*</label>
-          <textarea name="objetivo" required rows="3" placeholder="Ej.: autoridad en mi zona, más alcance orgánico, ventas del menú del día; frenos: falta de tiempo, pocas ideas, baja retención" class="mt-1 w-full rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+          <textarea name="objetivo" required rows="3" maxlength="500" placeholder="Ej.: autoridad en mi zona, más alcance orgánico, ventas del menú del día; frenos: falta de tiempo, pocas ideas, baja retención" class="mt-1 w-full rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
         </div>
 
         <div>
           <label class="block text-sm text-neutral-300">¿En qué destaca tu negocio sobre la competencia?*</label>
-          <textarea name="diferencial" required rows="3" placeholder="Ej.: horno de leña, producto local, reseñas 4,8★, rapidez en entrega, ubicación céntrica, parking propio..." class="mt-1 w-full rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+          <textarea name="diferencial" required rows="3" maxlength="500" placeholder="Ej.: horno de leña, producto local, reseñas 4,8★, rapidez en entrega, ubicación céntrica, parking propio..." class="mt-1 w-full rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
         </div>
 
         <div>
           <label class="block text-sm text-neutral-300">Competidor (URL de Instagram, opcional)</label>
-          <input name="competidor" placeholder="https://instagram.com/competidor" class="mt-1 w-full rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+          <input name="competidor" placeholder="https://instagram.com/competidor" pattern="^$|^https?:\\/\\/(?:www\\.)?instagram\\.com\\/.*" title="Solo URLs de Instagram" class="mt-1 w-full rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-100 placeholder-neutral-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
         </div>
 
+        <!-- Honeypot para bots -->
+        <div class="hidden" aria-hidden="true">
+          <label>Empresa
+            <input name="empresa" autocomplete="off" tabindex="-1" class="mt-1 w-full rounded-xl border border-neutral-700 bg-neutral-800 text-neutral-100 px-3 py-2">
+          </label>
+        </div>
         <!-- Cloudflare Turnstile (dark) -->
         <div class="mt-2">
           <div class="cf-turnstile" data-sitekey="0x4AAAAAAB319LvRRrr4YA6R" data-theme="dark" data-callback="onTS"></div>
@@ -108,14 +114,14 @@
             <p><strong>Destinatarios/Encargados:</strong> Cloudflare (hosting y seguridad), Google (Google Sheets, si lo configuras). No se prevén transferencias fuera de la UE sin garantías adecuadas.</p>
             <p><strong>Conservación:</strong> hasta 12 meses o hasta que solicites su supresión.</p>
             <p><strong>Derechos:</strong> acceso, rectificación, supresión, oposición, limitación y portabilidad. Puedes ejercerlos en a.martinro@gmail.com.</p>
-            <p><strong>Información adicional:</strong> consulta la Política de Privacidad completa en <a href="#" target="_blank" class="underline">este enlace</a>.</p>
+            <p><strong>Información adicional:</strong> consulta la Política de Privacidad completa en <a href="politica-privacidad.html" target="_blank" class="underline">este enlace</a>.</p>
             <p class="italic">*Plantilla orientativa: ajusta con tu asesoría.</p>
           </div>
         </details>
 
         <label class="flex items-center gap-2 text-sm mt-2">
           <input type="checkbox" name="consent" required class="h-4 w-4 accent-indigo-600">
-          <span>He leído y acepto la <a href="#" target="_blank" class="underline">Política de Privacidad</a>.</span>
+          <span>He leído y acepto la <a href="politica-privacidad.html" target="_blank" class="underline">Política de Privacidad</a>.</span>
         </label>
 
         <button type="submit" class="mt-3 w-full md:w-auto rounded-xl bg-indigo-600 text-white px-5 py-2.5 font-semibold hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400">Generar guion</button>
@@ -186,6 +192,29 @@
       turnstileToken: tsToken || window.__tsToken || '',
       ...UTM
     };
+
+    // --- Front firewall (no enviar a Make si huele mal) ---
+    const auditText = [
+      payload.nombre, payload.sector, payload.objetivo,
+      payload.diferencial, payload.ciudad, payload.instagram
+    ].filter(Boolean).join(' ').toLowerCase();
+
+    const RE_PROFANITY = /\b(puta|puto|mierda|cabr[oó]n|gilipollas|coñ[oa]|joder|hostia|follar|sexo|porn(?:o|ografía)|xxx|onlyfans|xvideos|xnxx|redtube|dildo|vibrador|pene|vagina|tetas?|pechos|nalgas|verga|pito)\b/i;
+    const RE_INJECTION = /\b(ignore (?:all|previous|instructions)|system prompt|act as|jailbreak|developer mode|bypass)\b/i;
+    const RE_HTMLJS = /<\s*(script|img|iframe|style|a)\b|on(?:error|load)\s*=|javascript:/i;
+    const RE_IG = /^$|^https?:\/\/(?:www\.)?instagram\.com\//i;
+
+    const honeypot = fd.get('empresa');
+    if (honeypot) { msg.textContent = 'Error: contenido no permitido (bot)'; return; }
+
+    if (auditText.length > 1500 || RE_PROFANITY.test(auditText) || RE_INJECTION.test(auditText) || RE_HTMLJS.test(auditText)) {
+      msg.textContent = 'Por favor, usa lenguaje profesional y evita código/HTML.';
+      return;
+    }
+    if (payload.competidor && !RE_IG.test(payload.competidor.trim())) {
+      msg.textContent = 'La URL de competidor debe ser de Instagram.';
+      return;
+    }
 
     try{
       const res = await fetch(API_URL, {
