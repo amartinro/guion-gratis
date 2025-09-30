@@ -141,6 +141,11 @@
       <h3 class="text-xl font-semibold mt-6">Checklist DIY</h3>
       <ul id="checklist" class="list-disc pl-5 mt-2 space-y-1 text-neutral-200"></ul>
 
+      <div id="ideas-contenido-section" class="mt-6 hidden">
+        <h3 class="text-xl font-semibold">Ideas de contenido</h3>
+        <ul id="ideas-contenido" class="list-disc pl-5 mt-2 space-y-1 text-neutral-200"></ul>
+      </div>
+
       <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-3">
         <!-- Copiar guion (secundario) -->
         <button id="copiar" type="button"
@@ -189,6 +194,8 @@
   const submitBtn = document.getElementById('submit-btn');
   const toast = document.getElementById('toast');
   const toastText = document.getElementById('toast-text');
+  const ideasSection = document.getElementById('ideas-contenido-section');
+  const ideasList = document.getElementById('ideas-contenido');
   let toastTimer;
   function showToast(text){
     if(!toast || !toastText) return;
@@ -354,15 +361,30 @@
 
       const variantesArr = toList(data.variantes_gancho ?? g?.variantes_gancho);
       const checklistArr = toList(data.checklist_diy ?? g?.checklist_diy);
+      const ideasArr = toList(data.ideas_contenido ?? g?.ideas_contenido);
 
       document.getElementById('plano').innerHTML = planoArr.map(p =>
         `<p><strong>${p.segundos || ''}:</strong> ${p.accion || ''} · <em class="text-neutral-300">${p.texto_pantalla || ''}</em> · Voz: ${p.voz || ''}</p>`
       ).join('');
       document.getElementById('variantes').innerHTML = variantesArr.map(v=>`<li>${v}</li>`).join('');
       document.getElementById('checklist').innerHTML = checklistArr.map(v=>`<li>${v}</li>`).join('');
+      if (ideasList && ideasSection) {
+        if (ideasArr.length) {
+          ideasList.innerHTML = ideasArr.map(idea => `<li>${idea}</li>`).join('');
+          ideasSection.classList.remove('hidden');
+        } else {
+          ideasList.innerHTML = '';
+          ideasSection.classList.add('hidden');
+        }
+      }
+
+      const ideasBlock = ideasArr.length
+        ? `\n\nIDEAS DE CONTENIDO:\n${ideasArr.map((idea, idx) => `${idx + 1}. ${idea}`).join('\n')}`
+        : '';
 
       const fullText = `GANCHO: ${g.gancho}\nPROBLEMA: ${g.problema}\nSOLUCIÓN: ${g.solucion}\nCTA: ${g.cta}\n\nPLANO A PLANO:\n` +
-        planoArr.map(p=>`${p.segundos || ''}: ${p.accion || ''} | ${p.texto_pantalla || ''} | Voz: ${p.voz || ''}`).join('\n');
+        planoArr.map(p=>`${p.segundos || ''}: ${p.accion || ''} | ${p.texto_pantalla || ''} | Voz: ${p.voz || ''}`).join('\n') +
+        ideasBlock;
 
       document.getElementById('copiar').onclick = async ()=>{
         const ok = await copyTextToClipboard(fullText);
